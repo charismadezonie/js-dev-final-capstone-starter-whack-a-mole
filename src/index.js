@@ -22,7 +22,7 @@ let difficulty = "hard";
  */
 
 function randomInteger(min, max) {
-  // return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 /**
@@ -49,8 +49,6 @@ function setDelay(difficulty) {
     return 1000;
   } else if (difficulty === "hard") {
     return randomInteger(600, 1200);
-  } else {
-    return 0; // Default case
   }
 }
 
@@ -72,14 +70,14 @@ function setDelay(difficulty) {
 
   // TODO: Write your code here.
 function chooseHole(holes) {
-  const index = Math.floor(Math.random() * 9);
+  const index = randomInteger(0,8);
   const hole = holes[index];
-  if (lastHole && hole === lastHole) {
+  if (hole === lastHole){
     return chooseHole(holes);
-  } else {
+  }else{
     lastHole = hole;
-    return hole;
   }
+  return hole;
 }
 
 /**
@@ -105,14 +103,14 @@ function chooseHole(holes) {
 
   // TODO: Write your code here
 function gameOver() {
-    if (time > 0) {
-      const timeoutId = showUp();
-      return timeoutId;
-    } else {
-      const gameStopped = stopGame();
+  if (time > 0){
+    let timeoutId = showUp();
+    return timeoutId;
+    }else{
+      let gameStopped = stopGame();
       return gameStopped;
     }
-}
+  }
 
 /**
 *
@@ -145,7 +143,7 @@ function showAndHide(hole, delay){
   const timeoutID = setTimeout(() => {
     toggleVisibility(hole); // Hide the mole
     gameOver();
-  }, delay);
+  }, 1000);
   return timeoutID;
 }
 
@@ -158,7 +156,6 @@ function showAndHide(hole, delay){
 
 function toggleVisibility(hole) {// Show the mole{
   hole.classList.toggle("show");
-
   return hole;
 }
 
@@ -202,9 +199,13 @@ function clearScore() {
 */
 
 function updateTimer() {
-  timerDisplay.textContent = time;
+  if (time > 0){
+    time -= 1;
+    timerDisplay.textContent = time;
+  }
   return time;
 }
+
 /**
 *
 * Starts the timer using setInterval. For each 1000ms (1 second)
@@ -213,7 +214,7 @@ function updateTimer() {
 */
 
 function startTimer() {
-  timer = setInterval(updateTimer, 1000);
+  setInterval(updateTimer, 1000);
   return timer;
 }
 /**
@@ -236,8 +237,10 @@ function whack(event) {
 */
 
 function setEventListeners(){
-  moles.forEach(mole => mole.addEventListener('click', whack));
-  return moles;
+  for (var i = 0; i < moles.length; i++) {
+    moles[i].addEventListener('click', whack);
+    }
+    return moles;
 }
 /**
 *
@@ -269,8 +272,12 @@ function stopGame(){
 *
 */
 function startGame(){
-  //setDuration(10);
-  //showUp();
+  setDuration(15);
+  showUp();
+  points = 0;
+  clearScore();
+  startTimer();
+  setEventListeners();
   return "game started";
 }
 
